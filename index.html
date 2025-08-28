@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --header-bg: #fff;
+            --card-bg: #fff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --header-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        header {
+            background-color: var(--header-bg);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        header nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        header nav a:hover {
+            color: #0056b3;
+        }
+        .container {
+            display: flex;
+            padding: 30px;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .profile {
+            flex: 1;
+            max-width: 200px;
+            padding-right: 10px;
+        }
+        .profile img {
+            width: 100%;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+        
+        .profile-name {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .control-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .control-button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.dark-mode .control-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .info {
+            flex: 2;
+            max-width: 600px;
+        }
+        .info h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .content-section {
+            margin-bottom: 30px;
+        }
+        
+        /* 图片行排布样式 */
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap; /* 允许换行 */
+            gap: 20px; /* 每个图片之间的间隙 */
+            justify-content: space-between; /* 水平间距均匀分布 */
+        }
+        .image-gallery img {
+            width: calc(16.66% - 20px); /* 每行6张图片，每张图片占宽度的 16.66%，减去gap间隙 */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Content页面网格布局样式 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3列等宽布局 */
+            gap: 20px; /* 网格间距 */
+            margin-top: 20px;
+        }
+        .content-item {
+            position: relative;
+            aspect-ratio: 1 / 1; /* 保持正方形比例 */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .content-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        .content-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持图片比例并填充容器 */
+        }
+        .upload-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            border: 2px dashed #ccc;
+            color: #999;
+            font-size: 24px;
+        }
+        .upload-box:hover {
+            border-color: #007BFF;
+            color: #007BFF;
+        }
+        .upload-box .plus-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .file-input {
+            display: none; /* 隐藏原始文件输入框 */
+        }
+        /* 响应式布局 */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: repeat(2, 1fr); /* 平板设备显示2列 */
+            }
+        }
+        @media (max-width: 480px) {
+            .content-grid {
+                grid-template-columns: 1fr; /* 手机设备显示1列 */
+            }
+        }
+        
+        /* Contact页面样式 */
+        .contact-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .contact-section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            text-align: center;
+        }
+        .contact-section h3 {
+            margin-top: 0;
+            color: #007BFF;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .social-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        .social-icon img:hover {
+            transform: scale(1.1);
+        }
+        
+        .hover-underline {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hover-underline {
+            position: relative;
+            display: inline-block;
+            color: #3498db; /* 浅蓝色 */
+        }
+        
+        .hover-underline:hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3498db; /* 浅蓝色 */
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 -2px 5px var(--shadow-color);
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="display: flex; align-items: center;">
+            <h1 id="site-title">momo</h1>
+            <div class="header-controls" style="margin-left: 15px;">
+                <button id="theme-toggle" class="control-button" title="Toggle dark/light mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button id="language-toggle" class="control-button" title="Toggle language">
+                    <span id="current-lang">English</span>
+                </button>
+            </div>
+        </div>
+        <nav>
+            <a href="#" onclick="showContent('about')" class="nav-link" id="nav-about">关于我</a>
+            <a href="#" onclick="showContent('contact')" class="nav-link" id="nav-contact">联系方式</a>
+            <a href="#" onclick="showContent('content')" class="nav-link" id="nav-content">内容</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="profile">
+            <img src="images/profile.jpg" alt="Profile Picture"> <!-- 图片路径 -->
+            <div class="profile-name" id="profile-name" style="font-size: 1.5em;">赵钦治</div>
+        </div>
+        <div class="info">
+            <div id="about" class="content-section">
+                <h2>关于我</h2>
+                <p>我叫赵钦治，去年从大连海洋大学毕业。专业是自动化。本人对产品经理这个岗位有较高的兴趣，过往均有BC端的产品经验（B端是CRM,ERP等定制化web端搭建为主。C端主要是工具类产品，包括小程序app等），现在在积极的学习AI领域的知识，打算寻找AI类的产品经理工作。目前已用AI工具搭建完成了一个小游戏和个人网站，还在扣子平台上面搭建了自己的智能体和应用。非常希望能够进入到AI行业，顺应时代浪潮贡献出属于自己的价值！</p>
+            </div>
+            <div id="contact" class="content-section" style="display: none;">
+                <h2>联系方式</h2>
+                <div class="contact-container">
+                    <div class="contact-section">
+                        <h3>Mail Me</h3>
+                        <p>QQ邮箱：<span class="hover-underline">2544658619@qq.com</span>        谷歌邮箱：<span class="hover-underline">echojames939@gmail.com</span></p>
+                    </div>
+                    <div class="contact-section">
+                        <h3>Chat With Me</h3>
+                        <p>WeChat：<span class="hover-underline">HONORCHONG</span></p>
+                    </div>
+                    <div class="contact-section">
+                        <h3>Follow Me</h3>
+                        <div class="social-icons">
+                            <a href="https://www.xiaohongshu.com/user/profile/5d38694f0000000011038a3d" target="_blank" class="social-icon"><img src="images/小红书.jpg" alt="小红书"></a>
+                            <a href="https://www.xiaoyuzhoufm.com/podcast/63205e773e39590e266b0b4e" target="_blank" class="social-icon"><img src="images/小宇宙.jpg" alt="小宇宙"></a>
+                            <a href="https://twitter.com/echo_jamesHH" target="_blank" class="social-icon"><img src="images/X.jpg" alt="推特"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="content" class="content-section" style="display: none;">
+                <h2>内容</h2>
+                <div class="content-grid" id="contentGrid">
+                    <!-- 文件将从content文件夹自动加载 -->
+                </div>
+            </div>
+            <div id="skills" class="content-section">
+                <h2 style="margin-top: 40px;">My Skills</h2>
+                <div class="image-gallery">
+                    <!-- 添加技能图片 -->
+                    <img src="images/figma.jpg" alt="Skill 1">
+                    <img src="images/axure.jpg" alt="Skill 2">
+                    <img src="images/modao.jpg" alt="Skill 3">
+                    <img src="images/lark.jpg" alt="Skill 4">
+                    <img src="images/notion.jpg" alt="Skill 5">
+                    <img src="images/xmind.jpg" alt="Skill 6">
+                    <img src="images/chatgpt.jpg" alt="Skill 7">
+                    <img src="images/deepseek.jpg" alt="Skill 8">
+                    <img src="images/notebooklm.jpg" alt="Skill 9">
+                    <img src="images/mapify.jpg" alt="Skill 10">
+                    <img src="images/X.jpg" alt="Skill 11">
+                    <img src="images/perplexity.jpg" alt="Skill 12">
+                </div>
+                
+                <h2 style="margin-top: 40px;">Get in Touch</h2>
+                <p style="text-align: center;">QQ邮箱：<span class="hover-underline">2544658619@qq.com</span></p>
+                <p style="text-align: center;">谷歌邮箱：<span class="hover-underline">echojames939@gmail.com</span></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 赵钦治</p>
+    </footer>
+
+    <script>
+        // 存储内容文件的数据
+        let contentFiles = [];
+        
+        // 存储语言数据
+        const translations = {
+            'en': {
+                'site_title': 'Zhao Qinzhi',
+                'about': 'About Me',
+                'contact': 'Contact',
+                'content': 'Content',
+                'about_text': 'My name is Zhao Qinzhi, I graduated from Dalian Ocean University last year. My major is Automation. I have a strong interest in the Product Manager position and have experience in both B-end and C-end products (B-end mainly involves customized web development for CRM, ERP, etc. C-end mainly involves tool-type products, including mini-programs and apps). I am actively learning knowledge in the AI field and plan to seek a Product Manager position in AI. I have already built a small game and personal website using AI tools, and have also built my own intelligent agent and application on the Koozi platform. I am very eager to enter the AI industry and contribute my own value to the trend of the times!',
+                'my_skills': 'My Skills',
+                'get_in_touch': 'Get in Touch',
+                'mail_me': 'Mail Me',
+                'chat_with_me': 'Chat With Me',
+                'follow_me': 'Follow Me',
+                'qq_mail': 'QQ Mail',
+                'google_mail': 'Google Mail',
+                'wechat': 'WeChat',
+                'download_file': 'Download File',
+                'profile_name': 'Zhao Qinzhi',
+                'nav_about': 'About',
+                'nav_contact': 'Contact',
+                'nav_content': 'Content'
+            },
+            'zh': {
+                'site_title': '赵钦治',
+                'about': '关于我',
+                'contact': '联系方式',
+                'content': '内容',
+                'about_text': '我叫赵钦治，去年从大连海洋大学毕业。专业是自动化。本人对产品经理这个岗位有较高的兴趣，过往均有BC端的产品经验（B端是CRM,ERP等定制化web端搭建为主。C端主要是工具类产品，包括小程序app等），现在在积极的学习AI领域的知识，打算寻找AI类的产品经理工作。目前已用AI工具搭建完成了一个小游戏和个人网站，还在扣子平台上面搭建了自己的智能体和应用。非常希望能够进入到AI行业，顺应时代浪潮贡献出属于自己的价值！',
+                'my_skills': '我的技能',
+                'get_in_touch': '联系我',
+                'mail_me': '邮箱联系',
+                'chat_with_me': '微信联系',
+                'follow_me': '关注我',
+                'qq_mail': 'QQ邮箱',
+                'google_mail': '谷歌邮箱',
+                'wechat': '微信',
+                'download_file': '下载文件',
+                'profile_name': '赵钦治',
+                'nav_about': '我的',
+                'nav_contact': '联系方式',
+                'nav_content': '内容'
+            }
+        };
+        
+        // 当前语言
+        let currentLang = 'zh';
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载content文件夹中的文件
+            loadContentFiles();
+            
+            // 初始化主题切换
+            initThemeToggle();
+            
+            // 初始化语言切换
+            initLanguageToggle();
+            
+            // 应用当前语言
+            applyLanguage(currentLang);
+        });
+        
+        // 初始化主题切换
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // 检查本地存储中的主题设置
+            const savedTheme = localStorage.getItem('theme');
+            
+            // 如果有保存的主题设置，应用它
+            if (savedTheme) {
+                document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+                updateThemeIcon(savedTheme === 'dark');
+            } else if (prefersDarkScheme.matches) {
+                // 如果用户系统偏好暗色模式，应用暗色模式
+                document.body.classList.add('dark-mode');
+                updateThemeIcon(true);
+            }
+            
+            // 添加点击事件
+            themeToggle.addEventListener('click', function() {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                updateThemeIcon(isDarkMode);
+            });
+        }
+        
+        // 更新主题图标
+        function updateThemeIcon(isDarkMode) {
+            const themeIcon = document.querySelector('#theme-toggle i');
+            themeIcon.className = isDarkMode ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        
+        // 初始化语言切换
+        function initLanguageToggle() {
+            const langToggle = document.getElementById('language-toggle');
+            
+            // 检查本地存储中的语言设置
+            const savedLang = localStorage.getItem('language');
+            
+            // 如果有保存的语言设置，应用它
+            if (savedLang && translations[savedLang]) {
+                currentLang = savedLang;
+                updateLanguageDisplay();
+            }
+            
+            // 添加点击事件
+            langToggle.addEventListener('click', function() {
+                currentLang = currentLang === 'en' ? 'zh' : 'en';
+                localStorage.setItem('language', currentLang);
+                applyLanguage(currentLang);
+            });
+        }
+        
+        // 更新语言显示
+        function updateLanguageDisplay() {
+            const langDisplay = document.getElementById('current-lang');
+            langDisplay.textContent = currentLang === 'en' ? 'English' : '中文';
+        }
+        
+        // 应用语言
+        function applyLanguage(lang) {
+            if (!translations[lang]) return;
+            
+            // 更新语言显示
+            updateLanguageDisplay();
+            
+            // 更新导航按钮
+            document.getElementById('nav-about').textContent = translations[lang].nav_about;
+            document.getElementById('nav-contact').textContent = translations[lang].nav_contact;
+            document.getElementById('nav-content').textContent = translations[lang].nav_content;
+            
+            // 更新网站标题
+            document.getElementById('site-title').textContent = translations[lang]['site_title'];
+            
+            // 更新个人资料名称
+            document.getElementById('profile-name').textContent = translations[lang]['profile_name'];
+            
+            // 更新关于我的文本
+            const aboutSection = document.querySelector('#about p');
+            if (aboutSection) {
+                aboutSection.textContent = translations[lang]['about_text'];
+            }
+            
+            // 更新技能标题
+            const skillsTitle = document.querySelector('#skills h2:first-child');
+            if (skillsTitle) {
+                skillsTitle.textContent = translations[lang]['my_skills'];
+            }
+            
+            // 更新联系我标题
+            const contactTitle = document.querySelector('#skills h2:last-of-type');
+            if (contactTitle) {
+                contactTitle.textContent = translations[lang]['get_in_touch'];
+            }
+            
+            // 更新联系方式标题
+            document.querySelectorAll('.contact-section h3').forEach(title => {
+                const key = title.textContent.toLowerCase().replace(/\s+/g, '_');
+                if (translations[lang][key]) {
+                    title.textContent = translations[lang][key];
+                }
+            });
+            
+            // 更新下载按钮文本
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.textContent = translations[lang]['download_file'];
+            }
+        }
+        
+        function showContent(section) {
+            const sections = ['about', 'contact', 'content'];
+            sections.forEach(s => {
+                if (document.getElementById(s)) {
+                    document.getElementById(s).style.display = s === section ? 'block' : 'none';
+                }
+            });
+            
+            // 控制skills部分的显示和隐藏
+            const skillsSection = document.getElementById('skills');
+            if (skillsSection) {
+                skillsSection.style.display = section === 'about' ? 'block' : 'none';
+            }
+            
+            // 如果切换到content页面，确保文件被加载
+            if (section === 'content') {
+                loadContentFiles();
+            }
+        }
+        
+        // 从content文件夹加载文件
+        function loadContentFiles() {
+            // 清空文件数组
+            contentFiles = [];
+            
+            // 清除现有显示
+            const contentGrid = document.getElementById('contentGrid');
+            contentGrid.innerHTML = '';
+            
+            // 按照指定顺序定义文件夹
+            const folders = ['AI产品篇', 'AI信息源', 'AI行业分析', 'Granola'];
+            
+            // 为每个文件夹创建文件列表
+            folders.forEach(folder => {
+                // 根据文件夹名称获取对应的文件
+                let folderFiles = [];
+                
+                // 添加文件夹标题
+                const folderTitle = document.createElement('h3');
+                folderTitle.textContent = folder;
+                folderTitle.style.gridColumn = '1 / -1'; // 跨越所有列
+                folderTitle.style.marginTop = '20px';
+                folderTitle.style.marginBottom = '10px';
+                contentGrid.appendChild(folderTitle);
+                
+                // 根据文件夹名称获取对应的文件
+                if (folder === 'AI产品篇') {
+                    folderFiles = [
+                        { name: 'AI产品篇（上）.mp4', type: 'video/mp4', path: `${folder}/AI产品篇（上）.mp4` },
+                        { name: 'AI产品篇（下）.mp4', type: 'video/mp4', path: `${folder}/AI产品篇（下）.mp4` },
+                        { name: 'AI产品篇（笔记）.jpg', type: 'image/jpeg', path: `${folder}/AI产品篇（笔记）.jpg` }
+                    ];
+                } else if (folder === 'AI信息源') {
+                    folderFiles = [
+                        { name: 'AI信息源（上）.mp4', type: 'video/mp4', path: `${folder}/AI信息源（上）.mp4` },
+                        { name: 'AI信息源（下）.mp4', type: 'video/mp4', path: `${folder}/AI信息源（下）.mp4` },
+                        { name: 'AI信息源（笔记）.jpg', type: 'image/jpeg', path: `${folder}/AI信息源（笔记）.jpg` }
+                    ];
+                } else if (folder === 'AI行业分析') {
+                    folderFiles = [
+                        { name: 'AI行业分析.mp4', type: 'video/mp4', path: `${folder}/AI行业分析.mp4` },
+                        { name: 'AI行业分析（笔记）.jpg', type: 'image/jpeg', path: `${folder}/AI行业分析（笔记）.jpg` }
+                    ];
+                } else if (folder === 'Granola') {
+                    folderFiles = [
+                        { name: 'Granola.mp4', type: 'video/mp4', path: `${folder}/Granola.mp4` },
+                        { name: 'Granola（笔记）.jpg', type: 'image/jpeg', path: `${folder}/Granola（笔记）.jpg` }
+                    ];
+                }
+                
+                // 处理每个文件
+                folderFiles.forEach((file, index) => {
+                    // 创建文件对象
+                    const fileObj = {
+                        id: `${folder}-file-${index}`,
+                        name: file.name,
+                        type: file.type,
+                        path: file.path
+                    };
+                    
+                    // 添加到文件列表
+                    contentFiles.push(fileObj);
+                    
+                    // 显示文件
+                    displayFile(fileObj);
+                });
+            });
+        }
+        
+        // 在UI中显示文件
+        function displayFile(fileObj) {
+            const contentGrid = document.getElementById('contentGrid');
+            const fileItem = document.createElement('div');
+            fileItem.className = 'content-item';
+            fileItem.dataset.fileId = fileObj.id;
+            
+            // 根据文件类型显示不同的预览
+            if (fileObj.type.startsWith('image/')) {
+                // 图片文件显示缩略图
+                fileItem.innerHTML = `
+                    <img src="${fileObj.path}" alt="${fileObj.name}">
+                    <div class="file-name" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); color: white; padding: 5px; text-align: center; font-size: 12px;">
+                        ${fileObj.name}
+                    </div>
+                `;
+            } else if (fileObj.type.startsWith('video/')) {
+                // 视频文件显示视频图标和名称
+                fileItem.innerHTML = `
+                    <div style="position: relative; height: 100%; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <div style="font-size: 40px; color: white;">🎬</div>
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(0,0,0,0.7); color: white; padding: 5px; font-size: 12px; text-align: center;">
+                            ${fileObj.name}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 非图片/视频文件显示文件图标和名称
+                fileItem.innerHTML = `
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 10px; text-align: center;">
+                        <div style="font-size: 40px;">📄</div>
+                        <div style="margin-top: 10px; word-break: break-word; font-size: 14px;">${fileObj.name}</div>
+                    </div>
+                `;
+            }
+            
+            // 添加点击事件预览文件
+            fileItem.addEventListener('click', function() {
+                // 打开预览窗口
+                openFilePreview(fileObj);
+            });
+            
+            // 将文件项添加到网格中
+            contentGrid.appendChild(fileItem);
+        }
+        
+        // 创建预览模态框
+        function createPreviewModal() {
+            // 检查是否已存在模态框
+            if (document.getElementById('previewModal')) {
+                return;
+            }
+            
+            // 创建模态框元素
+            const modal = document.createElement('div');
+            modal.id = 'previewModal';
+            modal.className = 'modal';
+            modal.style.display = 'none';
+            modal.style.position = 'fixed';
+            modal.style.zIndex = '1000';
+            modal.style.left = '0';
+            modal.style.top = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.overflow = 'auto';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            
+            // 创建模态框内容
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            modalContent.style.margin = '5% auto';
+            modalContent.style.padding = '0';
+            modalContent.style.width = '80%';
+            modalContent.style.maxWidth = '1000px';
+            modalContent.style.backgroundColor = 'var(--card-bg)';
+            modalContent.style.borderRadius = '8px';
+            modalContent.style.boxShadow = '0 4px 8px var(--shadow-color)';
+            modalContent.style.position = 'relative';
+            
+            // 创建关闭按钮
+            const closeBtn = document.createElement('span');
+            closeBtn.className = 'close-modal';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.right = '15px';
+            closeBtn.style.top = '10px';
+            closeBtn.style.color = 'var(--text-color)';
+            closeBtn.style.fontSize = '28px';
+            closeBtn.style.fontWeight = 'bold';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+                document.getElementById('previewContent').innerHTML = '';
+            };
+            
+            // 创建标题区域
+            const modalHeader = document.createElement('div');
+            modalHeader.className = 'modal-header';
+            modalHeader.style.padding = '15px';
+            modalHeader.style.borderBottom = '1px solid var(--shadow-color)';
+            
+            const modalTitle = document.createElement('h2');
+            modalTitle.id = 'previewTitle';
+            modalTitle.style.margin = '0';
+            modalTitle.style.color = 'var(--text-color)';
+            
+            // 创建内容区域
+            const modalBody = document.createElement('div');
+            modalBody.className = 'modal-body';
+            modalBody.style.padding = '20px';
+            modalBody.style.textAlign = 'center';
+            
+            const previewContent = document.createElement('div');
+            previewContent.id = 'previewContent';
+            previewContent.style.maxHeight = '70vh';
+            previewContent.style.overflow = 'auto';
+            
+            // 创建页脚区域
+            const modalFooter = document.createElement('div');
+            modalFooter.className = 'modal-footer';
+            modalFooter.style.padding = '15px';
+            modalFooter.style.borderTop = '1px solid var(--shadow-color)';
+            modalFooter.style.textAlign = 'center';
+            
+            const downloadBtn = document.createElement('button');
+            downloadBtn.id = 'downloadBtn';
+            downloadBtn.className = 'download-btn';
+            downloadBtn.textContent = '下载文件';
+            downloadBtn.style.backgroundColor = '#4CAF50';
+            downloadBtn.style.color = 'white';
+            downloadBtn.style.padding = '10px 20px';
+            downloadBtn.style.border = 'none';
+            downloadBtn.style.borderRadius = '4px';
+            downloadBtn.style.cursor = 'pointer';
+            downloadBtn.style.fontSize = '16px';
+            
+            // 组装模态框
+            modalHeader.appendChild(modalTitle);
+            modalHeader.appendChild(closeBtn);
+            
+            modalBody.appendChild(previewContent);
+            
+            modalFooter.appendChild(downloadBtn);
+            
+            modalContent.appendChild(modalHeader);
+            modalContent.appendChild(modalBody);
+            modalContent.appendChild(modalFooter);
+            
+            modal.appendChild(modalContent);
+            
+            // 添加到文档
+            document.body.appendChild(modal);
+        }
+        
+        // 打开文件预览
+        function openFilePreview(fileObj) {
+            // 确保模态框已创建
+            createPreviewModal();
+            
+            // 获取模态框元素
+            const modal = document.getElementById('previewModal');
+            const previewTitle = document.getElementById('previewTitle');
+            const previewContent = document.getElementById('previewContent');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            // 设置标题
+            previewTitle.textContent = fileObj.name;
+            
+            // 清空内容区域
+            previewContent.innerHTML = '';
+            
+            // 根据文件类型显示不同的预览内容
+            if (fileObj.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = fileObj.path;
+                img.alt = fileObj.name;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '70vh';
+                img.style.objectFit = 'contain';
+                previewContent.appendChild(img);
+            } else if (fileObj.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = fileObj.path;
+                video.controls = true;
+                video.style.maxWidth = '100%';
+                video.style.maxHeight = '70vh';
+                video.style.backgroundColor = '#000';
+                previewContent.appendChild(video);
+            } else {
+                const fileIcon = document.createElement('div');
+                fileIcon.style.fontSize = '72px';
+                fileIcon.style.marginBottom = '20px';
+                fileIcon.textContent = '📄';
+                
+                const fileMsg = document.createElement('p');
+                fileMsg.textContent = '无法预览此类型的文件';
+                
+                previewContent.appendChild(fileIcon);
+                previewContent.appendChild(fileMsg);
+            }
+            
+            // 设置下载按钮
+            downloadBtn.onclick = function() {
+                const a = document.createElement('a');
+                a.href = fileObj.path;
+                a.download = fileObj.name;
+                a.click();
+            };
+            
+            // 显示模态框
+            modal.style.display = 'block';
+        }
+        
+
+
+        // Show "About" by default
+        showContent('about');
+    </script>
+    
+</body>
+</html>
